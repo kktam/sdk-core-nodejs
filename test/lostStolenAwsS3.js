@@ -1,6 +1,7 @@
 // Imports for Test
 var MasterCardAPI = require('../index');
 var S3FS = require('s3fs');
+var Promise = require("bluebird");
 
 // variables Amazon Web Service S3
 var bucketPath = 'kt-key-store';
