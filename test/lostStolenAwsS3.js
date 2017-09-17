@@ -38,14 +38,37 @@ var password = "password";
 var operationConfig = new MasterCardAPI.OperationConfig("/fraud/loststolen/v1/account-inquiry", "update", [""], [""]);
 var operationMetaData = new MasterCardAPI.OperationMetaData("1.0.0", "https://sandbox.api.mastercard.com");
 
+function waitSeconds(iMilliSeconds) {
+    var counter= 0
+        , start = new Date().getTime()
+        , end = 0;
+    while (counter < iMilliSeconds) {
+        end = new Date().getTime();
+        counter = end - start;
+    }
+}
+
 describe('lostStolen, with AWS S3', function() {
 
     beforeEach( function() {
         var authentication = new MasterCardAPI.OAuth(clientId, s3p12loader, alias, password);
 
+        // need to wait for the private key to come back
+        waitSeconds(1500);
+
+        // correct private key
+        var updatedAuthentication = {
+            consumerKey: authentication.consumerKey,
+            privateKey: MasterCardAPI.GetPrivateKey(),
+            sign: authentication.sign
+        }
+
+        // debug - check the authentication's private key now
+        //console.log(updatedAuthentication);        
+
         MasterCardAPI.init({
             sandbox: true,
-            authentication: authentication
+            authentication: updatedAuthentication
         });
     });
 
