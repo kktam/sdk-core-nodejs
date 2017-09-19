@@ -36,7 +36,9 @@ var MasterCardAPI = {};
 // Imports
 var mastercardError = require('./lib/error');
 var constants = require('./lib/constants');
-var oauth = require("./lib/security/oauth/oauth");
+var oauthMain = require("./lib/security/oauth/oauth");
+var oauth = oauthMain.OAuth;
+var getAuthentication = oauthMain.getAuthentication;
 var operationConfig = require("./lib/operation-config");
 var operationMetaData = require("./lib/operation-metadata");
 var utils = require("./lib/utils");
@@ -507,6 +509,7 @@ function _getHttpMethod(action) {
 
 // Expose classes
 MasterCardAPI.OAuth = oauth;
+MasterCardAPI.GetAuthentication = getAuthentication;
 MasterCardAPI.OperationConfig = operationConfig;
 MasterCardAPI.OperationMetaData = operationMetaData;
 MasterCardAPI.MasterCardError = mastercardError;
