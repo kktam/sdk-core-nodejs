@@ -43,7 +43,13 @@ var preAuthentication = null;
 describe('lostStolen, with AWS S3', function() {
 
     beforeEach( function() {
-        preAuthentication = new MasterCardAPI.OAuth(clientId, s3p12loader, alias, password);
+        authentication = new MasterCardAPI.OAuth(clientId, s3p12loader, alias, password);
+        //console.log(authentication);
+
+        MasterCardAPI.init({
+            sandbox: true,
+            authentication: authentication
+        });        
     });
 
     afterEach( function() {
@@ -51,70 +57,46 @@ describe('lostStolen, with AWS S3', function() {
     });
 
     it('send valid request, with AWS S3', function(done){
-        
-        preAuthentication.promise.then(function (result) {
-            var authentication = MasterCardAPI.GetAuthentication(preAuthentication.consumerKey);
-    
-            // debug - check the authentication's private key now
-            //console.log(authentication);        
-    
-            MasterCardAPI.init({
-                sandbox: true,
-                authentication: authentication
-            });
 
-            var request = {
-                "AccountInquiry": {
-                    "AccountNumber": "5343434343434343"
-                }
-            };
-    
-            MasterCardAPI.execute({
-                operationConfig: operationConfig,
-                operationMetaData: operationMetaData,
-                params: request
-            },
+        var request = {
+            "AccountInquiry": {
+                "AccountNumber": "5343434343434343"
+            }
+        };
+
+        MasterCardAPI.execute({
+            operationConfig: operationConfig,
+            operationMetaData: operationMetaData,
+            params: request
+        },
             function (error, data) {
                 data.Account.Status.should.equal(true);
                 data.Account.Listed.should.equal(true);
                 data.Account.ReasonCode.should.equal("S");
                 data.Account.Reason.should.equal("STOLEN");
                 done();
-            });            
-        }, null);
+            });   
 
     });
 
+    it('send valid request with proxy, with AWS S3', function(done){   
 
-    it('send valid request with proxy, with AWS S3', function(done){
-        
-        preAuthentication.promise.then(function (result) {
-            var authentication = MasterCardAPI.GetAuthentication(preAuthentication.consumerKey);
-    
-            // debug - check the authentication's private key now
-            //console.log(authentication);        
-    
-            MasterCardAPI.init({
-                sandbox: true,
-                authentication: authentication
-            });
+        MasterCardAPI.setProxy("http://127.0.0.1:9999");
 
-            MasterCardAPI.setProxy("http://127.0.0.1:9999");
-            
-            var request = {
-                "AccountInquiry": {
-                    "AccountNumber": "5343434343434343"
-                }
-            };
-
-            var hasProxy = false;
-
-            if (!hasProxy) {
-                console.log('Skipping test.\n' +
-                            'If you have proxy, then setup proxy settings in test, and change hasProxy to true\n');
-                done();            
+        var request = {
+            "AccountInquiry": {
+                "AccountNumber": "5343434343434343"
             }
-            else {
+        };
+
+        var hasProxy = false;
+
+        if (!hasProxy) {
+            console.log('Skipping test.\n' +
+                'If you have proxy, then setup proxy settings in test, and change hasProxy to true\n');
+            done();
+        }
+        else {
 
             // run test once proxy settings is enabled
 
@@ -129,81 +111,55 @@ describe('lostStolen, with AWS S3', function() {
                     data.Account.ReasonCode.should.equal("S");
                     data.Account.Reason.should.equal("STOLEN");
                     done();
-                }); 
-                
-            }
-        }, null);
+                });
+        }
 
     });
 
     it('send valid request, with AWS S3', function(done){
 
-        preAuthentication.promise.then(function (result) {
-            var authentication = MasterCardAPI.GetAuthentication(preAuthentication.consumerKey);
-    
-            // debug - check the authentication's private key now
-            //console.log(authentication);        
-    
-            MasterCardAPI.init({
-                sandbox: true,
-                authentication: authentication
-            });
+        var request = {
+            "AccountInquiry": {
+                "AccountNumber": "5343434343434343"
+            }
+        };
 
-            var request = {
-                "AccountInquiry": {
-                    "AccountNumber": "5343434343434343"
-                }
-            };
-    
-            MasterCardAPI.execute({
-                operationConfig: operationConfig,
-                operationMetaData: operationMetaData,
-                params: request
-            },
+        MasterCardAPI.execute({
+            operationConfig: operationConfig,
+            operationMetaData: operationMetaData,
+            params: request
+        },
             function (error, data) {
                 data.Account.Status.should.equal(true);
                 data.Account.Listed.should.equal(true);
                 data.Account.ReasonCode.should.equal("S");
                 data.Account.Reason.should.equal("STOLEN");
                 done();
-            });         
-        }, null);
+            });
 
     });
 
     it('send error request, with AWS S3', function(done){
 
-        preAuthentication.promise.then(function (result) {
-            var authentication = MasterCardAPI.GetAuthentication(preAuthentication.consumerKey);
-    
-            // debug - check the authentication's private key now
-            //console.log(authentication);        
-    
-            MasterCardAPI.init({
-                sandbox: true,
-                authentication: authentication
-            });
+        var request = {
+            "AccountInquiry": {
+                "AccountNumber": "1111222233334444"
+            }
+        };
 
-            var request = {
-                "AccountInquiry": {
-                    "AccountNumber": "1111222233334444"
-                }
-            };
-    
-            MasterCardAPI.execute({
-                operationConfig: operationConfig,
-                operationMetaData: operationMetaData,
-                params: request
-            },
+        MasterCardAPI.execute({
+            operationConfig: operationConfig,
+            operationMetaData: operationMetaData,
+            params: request
+        },
             function (error, data) {
                 error.getHttpStatus().should.equal(400);
                 error.getMessage().should.equal("Unknown Error");
                 error.getReasonCode().should.equal("SYSTEM_ERROR");
                 error.getSource().should.equal("System");
-                
+
                 done();
-            });         
-        }, null);
+            });
 
     });
 
