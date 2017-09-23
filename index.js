@@ -506,7 +506,8 @@ function _getHttpMethod(action) {
 }
 
 // Expose classes
-MasterCardAPI.OAuth = oauth;
+MasterCardAPI.OAuth = oauth.OAuth;
+MasterCardAPI.OAuthWithKeyStore = oauth.OAuthWithKeyStore;
 MasterCardAPI.OperationConfig = operationConfig;
 MasterCardAPI.OperationMetaData = operationMetaData;
 MasterCardAPI.MasterCardError = mastercardError;

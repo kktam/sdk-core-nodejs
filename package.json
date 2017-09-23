@@ -28,7 +28,9 @@
     "sinon": "^1.17.3",
     "sleep": "^3.0.1",
     "chai": "^3.5.0",
-    "chai-string": "^1.2.0"
+    "chai-string": "^1.2.0",
+    "s3fs": "^2.5.0",
+    "bluebird": "^3.5.0"    
   },
   "dependencies": {
     "node-forge": "^0.6.39",
