@@ -4,10 +4,10 @@ var S3FS = require('s3fs');
 var Promise = require("bluebird");
 
 // variables Amazon Web Service S3
-var bucketPath = 'kt-key-store';
+var bucketPath = '<Place your S3 Bucket name here>';
 var p12Path = '/mastercard/mcapi_sandbox_key.p12';
 var s3Options = {
-  region: 'us-west-2'
+  region: '<Place your S3 region here>'
 };
 
 var s3p12loader = function(consumerKey, callback)  {
