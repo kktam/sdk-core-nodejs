@@ -42,14 +42,20 @@ var preAuthentication = null;
 
 describe('lostStolen, with AWS S3', function() {
 
-    beforeEach( function() {
-        authentication = new MasterCardAPI.OAuth(clientId, s3p12loader, alias, password);
-        console.log(authentication);
+    beforeEach( function(done) {
+        var p12Promise = s3p12loader(clientId, null);
+        p12Promise.then(function (result) {
+            var authentication = new MasterCardAPI.OAuthWithKeyStore(clientId, result.p12, alias, password);
+            // Debug - un-comment this to inspect authentication string
+            //console.log(authentication);
+    
+            MasterCardAPI.init({
+                sandbox: true,
+                authentication: authentication
+            }); 
 
-        MasterCardAPI.init({
-            sandbox: true,
-            authentication: authentication
-        });        
+            done();
+        }, function() {});        
     });
 
     afterEach( function() {
