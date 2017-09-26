@@ -4,10 +4,10 @@ var S3FS = require('s3fs');
 var Promise = require("bluebird");
 
 // variables Amazon Web Service S3
-var bucketPath = '<Place your S3 Bucket name here>';
+var bucketPath = 'kt-key-store';
 var p12Path = '/mastercard/mcapi_sandbox_key.p12';
 var s3Options = {
-  region: '<Place your S3 region here>'
+  region: 'us-west-2'
 };
 
 var s3p12loader = function(consumerKey, callback)  {
@@ -45,7 +45,7 @@ describe('lostStolen, with AWS S3', function() {
     beforeEach( function(done) {
         var p12Promise = s3p12loader(clientId, null);
         p12Promise.then(function (result) {
-            var authentication = new MasterCardAPI.OAuthWithKeyStore(clientId, result.p12, alias, password);
+            var authentication = new MasterCardAPI.OAuthWithFileContent(clientId, result.p12, alias, password);
             // Debug - un-comment this to inspect authentication string
             //console.log(authentication);
     
